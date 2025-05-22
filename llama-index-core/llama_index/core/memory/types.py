@@ -45,6 +45,36 @@ class BaseMemory(BaseComponent):
         """Get all chat history."""
         return await asyncio.to_thread(self.get_all)
 
+    def get_by_id(self, message_id: str) -> Optional[ChatMessage]:
+        """
+        Get a specific message by its ID.
+
+        Args:
+            message_id: The ID of the message to retrieve
+
+        Returns:
+            The message if found, None otherwise
+
+        """
+        all_messages = self.get_all()
+        for message in all_messages:
+            if message.id == message_id:
+                return message
+        return None
+
+    async def aget_by_id(self, message_id: str) -> Optional[ChatMessage]:
+        """
+        Get a specific message by its ID (async).
+
+        Args:
+            message_id: The ID of the message to retrieve
+
+        Returns:
+            The message if found, None otherwise
+
+        """
+        return await asyncio.to_thread(self.get_by_id, message_id)
+
     @abstractmethod
     def put(self, message: ChatMessage) -> None:
         """Put chat history."""
