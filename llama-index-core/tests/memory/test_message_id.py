@@ -9,7 +9,9 @@ from llama_index.core.memory.memory import Memory
 def test_chat_message_id():
     """Test that ChatMessage can have an ID set."""
     # Create message with ID
-    message_with_id = ChatMessage(content="Test message", role=MessageRole.USER, id="test-id-123")
+    message_with_id = ChatMessage(
+        content="Test message", role=MessageRole.USER, id="test-id-123"
+    )
     assert message_with_id.id == "test-id-123"
 
     # Create message without ID
@@ -56,7 +58,7 @@ async def test_memory_multiple_messages():
     messages = [
         ChatMessage(content="Message 1", role=MessageRole.USER, id="msg-1"),
         ChatMessage(content="Message 2", role=MessageRole.ASSISTANT),  # No ID
-        ChatMessage(content="Message 3", role=MessageRole.USER)  # No ID
+        ChatMessage(content="Message 3", role=MessageRole.USER),  # No ID
     ]
 
     # Add messages

@@ -770,7 +770,9 @@ class Memory(BaseMemory):
         """Get all messages."""
         return await self.sql_store.get_messages(self.session_id, status=status)
 
-    async def aget_by_id(self, message_id: str, status: Optional[MessageStatus] = None) -> Optional[ChatMessage]:
+    async def aget_by_id(
+        self, message_id: str, status: Optional[MessageStatus] = None
+    ) -> Optional[ChatMessage]:
         """
         Get a specific message by its ID.
 
@@ -802,7 +804,9 @@ class Memory(BaseMemory):
         """Get all messages."""
         return asyncio_run(self.aget_all(status=status))
 
-    def get_by_id(self, message_id: str, status: Optional[MessageStatus] = None) -> Optional[ChatMessage]:
+    def get_by_id(
+        self, message_id: str, status: Optional[MessageStatus] = None
+    ) -> Optional[ChatMessage]:
         """
         Get a specific message by its ID.
 
