@@ -726,6 +726,10 @@ class Memory(BaseMemory):
 
     async def aput(self, message: ChatMessage) -> None:
         """Add a message to the chat store and process waterfall logic if needed."""
+        # Ensure message has an ID if not provided
+        if message.id is None:
+            message.id = str(uuid.uuid4())
+
         # Add the message to the chat store
         await self.sql_store.add_message(
             self.session_id, message, status=MessageStatus.ACTIVE
@@ -736,6 +740,11 @@ class Memory(BaseMemory):
 
     async def aput_messages(self, messages: List[ChatMessage]) -> None:
         """Add a list of messages to the chat store and process waterfall logic if needed."""
+        # Ensure all messages have IDs if not provided
+        for message in messages:
+            if message.id is None:
+                message.id = str(uuid.uuid4())
+
         # Add the messages to the chat store
         await self.sql_store.add_messages(
             self.session_id, messages, status=MessageStatus.ACTIVE
@@ -746,6 +755,11 @@ class Memory(BaseMemory):
 
     async def aset(self, messages: List[ChatMessage]) -> None:
         """Set the chat history."""
+        # Ensure all messages have IDs if not provided
+        for message in messages:
+            if message.id is None:
+                message.id = str(uuid.uuid4())
+
         await self.sql_store.set_messages(
             self.session_id, messages, status=MessageStatus.ACTIVE
         )
@@ -755,6 +769,26 @@ class Memory(BaseMemory):
     ) -> List[ChatMessage]:
         """Get all messages."""
         return await self.sql_store.get_messages(self.session_id, status=status)
+
+    async def aget_by_id(
+        self, message_id: str, status: Optional[MessageStatus] = None
+    ) -> Optional[ChatMessage]:
+        """
+        Get a specific message by its ID.
+
+        Args:
+            message_id: The ID of the message to retrieve
+            status: Filter by message status (active, archived, etc.)
+
+        Returns:
+            The message if found, None otherwise
+
+        """
+        all_messages = await self.sql_store.get_messages(self.session_id, status=status)
+        for message in all_messages:
+            if message.id == message_id:
+                return message
+        return None
 
     async def areset(self, status: Optional[MessageStatus] = None) -> None:
         """Reset the memory."""
@@ -769,6 +803,22 @@ class Memory(BaseMemory):
     def get_all(self, status: Optional[MessageStatus] = None) -> List[ChatMessage]:
         """Get all messages."""
         return asyncio_run(self.aget_all(status=status))
+
+    def get_by_id(
+        self, message_id: str, status: Optional[MessageStatus] = None
+    ) -> Optional[ChatMessage]:
+        """
+        Get a specific message by its ID.
+
+        Args:
+            message_id: The ID of the message to retrieve
+            status: Filter by message status (active, archived, etc.)
+
+        Returns:
+            The message if found, None otherwise
+
+        """
+        return asyncio_run(self.aget_by_id(message_id, status=status))
 
     def put(self, message: ChatMessage) -> None:
         """Add a message to the chat store and process waterfall logic if needed."""

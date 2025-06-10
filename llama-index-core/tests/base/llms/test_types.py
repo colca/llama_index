@@ -120,6 +120,7 @@ def test_chat_message_serializer():
         content="test content",
         additional_kwargs={"some_list": ["a", "b", "c"], "some_object": SimpleModel()},
     )
+    temp_str = str(m.model_dump())
     assert m.model_dump() == {
         "role": MessageRole.USER,
         "additional_kwargs": {
@@ -127,6 +128,7 @@ def test_chat_message_serializer():
             "some_object": {"some_field": ""},
         },
         "blocks": [{"block_type": "text", "text": "test content"}],
+        "id": None,
     }
 
 
@@ -141,6 +143,7 @@ def test_chat_message_legacy_roundtrip():
         "additional_kwargs": {},
         "blocks": [{"block_type": "text", "text": "foo"}],
         "role": MessageRole.USER,
+        "id": None,
     }
 
 

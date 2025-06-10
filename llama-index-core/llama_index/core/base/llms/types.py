@@ -294,6 +294,9 @@ class ChatMessage(BaseModel):
     role: MessageRole = MessageRole.USER
     additional_kwargs: dict[str, Any] = Field(default_factory=dict)
     blocks: list[ContentBlock] = Field(default_factory=list)
+    id: Optional[str] = Field(
+        default=None, description="Optional unique identifier for the message"
+    )
 
     def __init__(self, /, content: Any | None = None, **data: Any) -> None:
         """
